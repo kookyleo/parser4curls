@@ -13,6 +13,10 @@ curl <url> [options...]
 cp from Chrome/Edge, Safari, Firefox, and similar more.
 
 ## Example
+```tmol
+parser4curls = "0.1"
+```
+
 ```rust
 use parser4curls::parse;
 
