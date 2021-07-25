@@ -1,5 +1,6 @@
 # parser4curls
-a parser for the cURL commands copied from the developer tools in the browser.
+a parser for the cURL commands string that copied from the developer tools in the browser,
+or a string that is compatible with pattern `curl <url> [options...]`
 
 [![unittest](https://github.com/kookyleo/parser4curls/actions/workflows/unittest.yml/badge.svg)](https://github.com/kookyleo/parser4curls/actions/workflows/unittest.yml)
 

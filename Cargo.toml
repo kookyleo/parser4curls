@@ -2,6 +2,9 @@
 name = "parser4curls"
 version = "0.1.0"
 edition = "2018"
+authors = ["leo<kookyleo@gmail.com>"]
+description = "a parser for the cURL commands string that copied from the developer tools in the browser, or a string that is compatible with pattern `curl <url> [options...]`."
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
