@@ -10,7 +10,9 @@ use nom::{AsChar, IResult, InputTakeAtPosition};
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-/// curl <url> [options...]
+
+/// Curl
+/// the structure of parse result
 #[derive(Debug, PartialEq)]
 pub struct Curl<'a> {
     pub url: &'a str,
@@ -80,7 +82,17 @@ fn options_(input: &str) -> IResult<&str, (&str, Option<&str>)> {
     Ok((input, (k, o_args)))
 }
 
-pub fn text_curl(input: &str) -> IResult<&str, Curl> {
+/// Parse the cURL commands string to a Curl object
+/// 
+/// a valid `input` is a cURL commands string that copied from the developer tools in the browser, 
+/// or a string that is compatible with pattern `curl <url> [options...]`
+/// 
+/// # Examples
+///
+/// ```
+/// 
+/// ```
+pub fn parse(input: &str) -> IResult<&str, Curl> {
     // curl <url>
     let (input, (_, _, _, _, url, _, _)) = tuple((
         multispace0,
@@ -219,7 +231,7 @@ mod tests {
         -H 'Accept-Language: en-US' \
         -H 'Referer: https://www.google.com/' \
         -H 'Connection: keep-alive'"#;
-        assert_eq!(text_curl(input)?.1, Curl {
+        assert_eq!(parse(input)?.1, Curl {
             url: "https://www.google.com/search?q=Q&source=hp&ei=R0D8YImOFpJgI&iflsig=AINFCbYAAAxk_1clsqfWaCx&oq=Q&gs_lcp=CgdndQdnd3Mtd2l6sAEA&sclient=gws-wiz&ved=0ahUKJ1N_ekPzUDCAs&uact=5",
             options_header_cookies: serde_json::from_str::<HashMap<&str, &str>>(r#"{
                 "NID": "219=afff42rGSsJ_ci7v87s_GmpKS24k-d-Gc9p6RUa_79ktj-HCqJX3iu3rEZgSYLikPThAxI"
@@ -257,7 +269,7 @@ mod tests {
   -H 'accept-language: en-US,en;q=0.9' \
   -H 'cookie: CGIC=d2VicCxpbWFnZS9hc; NID=219=3XwFj5FYc2Jtkwl5K-QM2cWdxv8Am9t14-zH1QzxtHWEUT3BMg; DV=kyQKkk0J-HU_sc0eciTCQs_p7gJQEAAAA' \
   --compressed"#;
-        assert_eq!(text_curl(input)?.1, Curl {
+        assert_eq!(parse(input)?.1, Curl {
             url: "https://www.google.com/search?q=Tokyo&rlz=1C5CHFA_enJP651JP651&oq=Tokyo&aqs=chrome..69i57j69i65.262j0j1&sourceid=chrome&ie=UTF-8",
             options_header_cookies: serde_json::from_str::<HashMap<&str, &str>>(r#"{
                 "DV": "kyQKkk0J-HU_sc0eciTCQs_p7gJQEAAAA",
@@ -288,7 +300,7 @@ mod tests {
     #[test]
     fn test_cp_from_firefox() -> Result<()> {
         let input = r#"curl 'https://www.google.com.hk/complete/search?q=Q&cp=0&client=gws-wiz&xssi=t&gs_ri=gws-wiz&hl=en-US&authuser=0&pq=ss&psi=sTPLuZr7wPvq-2wA0.162687873&ofp=EAE&dpr=2' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:90.0) Gecko/20100101 Firefox/90.0' -H 'Accept: */*' -H 'Accept-Language: en-US,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2' --compressed -H 'Referer: https://www.google.com.hk/' -H 'Connection: keep-alive' -H 'Cookie: CGIC=Ikp0ZovKjtxPTAuOA; NID=219=tX80mwiQ4hbLDx-4wZuC8ySqLp1VLs; DV=E8Xt0D6kUcxCZ-YrBfXaKEAAAA' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' -H 'TE: trailers'"#;
-        assert_eq!(text_curl(input)?.1, Curl {
+        assert_eq!(parse(input)?.1, Curl {
             url: "https://www.google.com.hk/complete/search?q=Q&cp=0&client=gws-wiz&xssi=t&gs_ri=gws-wiz&hl=en-US&authuser=0&pq=ss&psi=sTPLuZr7wPvq-2wA0.162687873&ofp=EAE&dpr=2",
             options_header_cookies: serde_json::from_str::<HashMap<&str, &str>>(r#"{
                 "CGIC": "Ikp0ZovKjtxPTAuOA",
